@@ -1,68 +1,69 @@
 import ctypes
 import time
+import os
 # import serial
 
 # class USB():
-    # def __init__(self):
-        # dia=raw_input('please input the serial port number such as 0,1,2...\n')
-        # try:
-            # port=int(dia)
-            # ser = serial.Serial(port, timeout=1)
-            # print "succeed"
-        # except:
-            # print 'Can not connect the target port, seaching now...' 
-            # for i in range(30):
-                # print 'port',i,'test...',
-                # try:
-                    # ser = serial.Serial(i, timeout=1)
-                    # print 'succeed'
-                    # break
-                # except:
-                    # print 'fail'
-                    # continue
-        # self.ser=ser
-        # self.port=port
-    # def read_old(self):
-        # # c_s = ctypes.c_char_p(s)
-        # ser=self.ser
-        # data=ser.read(64)
-        # # while data=='':
-            # # data=ser.read(64)
+# def __init__(self):
+# dia=raw_input('please input the serial port number such as 0,1,2...\n')
+# try:
+# port=int(dia)
+# ser = serial.Serial(port, timeout=1)
+# print "succeed"
+# except:
+# print 'Can not connect the target port, seaching now...'
+# for i in range(30):
+# print 'port',i,'test...',
+# try:
+# ser = serial.Serial(i, timeout=1)
+# print 'succeed'
+# break
+# except:
+# print 'fail'
+# continue
+# self.ser=ser
+# self.port=port
+# def read_old(self):
+# # c_s = ctypes.c_char_p(s)
+# ser=self.ser
+# data=ser.read(64)
+# # while data=='':
+# # data=ser.read(64)
 
-        # time.sleep(0.2)
-        # return data
-        # return repr(rc_s.raw)
-        # # return rc_s.rawa
+# time.sleep(0.2)
+# return data
+# return repr(rc_s.raw)
+# # return rc_s.rawa
 
-    # def write(self, s):
-        # ser=self.ser
-        # # while ser.write(s) == 0:
-            # # time.sleep(0.1)
-        # try:
-            # ser.write(s)
-            # print "write"
-        # except:
-            # print "reconnect"
-            # ser= serial.Serial(self.port, timeout=1)
-            # self.ser=ser
-            # self.write(s)
-        # # rs = self.read()
-        # # return rs
-    # def read(self,s):
-        # ser=self.ser
-        # ser.write(s)
-        # data=ser.read(64)
-        # while data=='':
-            # while ser.write(s) == 0:
-                # print "rewrite"
-                # time.sleep(0.1)
-            # data=ser.read(64)
-            # print "no data"
-            # print len(data)
+# def write(self, s):
+# ser=self.ser
+# # while ser.write(s) == 0:
+# # time.sleep(0.1)
+# try:
+# ser.write(s)
+# print "write"
+# except:
+# print "reconnect"
+# ser= serial.Serial(self.port, timeout=1)
+# self.ser=ser
+# self.write(s)
+# # rs = self.read()
+# # return rs
+# def read(self,s):
+# ser=self.ser
+# ser.write(s)
+# data=ser.read(64)
+# while data=='':
+# while ser.write(s) == 0:
+# print "rewrite"
+# time.sleep(0.1)
+# data=ser.read(64)
+# print "no data"
+# print len(data)
 
-        # time.sleep(0.2)
-        # return data
-conf_91391 =  '''CONF:VOLT:DC D0,H
+# time.sleep(0.2)
+# return data
+conf_91391 = '''CONF:VOLT:DC D0,H
 CONF:REGI 0x00,0x00,0x00
 CONF:REGI 0x00,0x01,0x40
 CONF:REGI 0x00,0x03,0x00
@@ -121,7 +122,7 @@ CONF:REGI 0x00,0x6A,0x00
 CONF:REGI 0x00,0x6B,0x00
 CONF:REGI 0x00,0x6C,0x00
 CONF:REGI 0x00,0x7F,0x0B'''
-conf_91392= '''CONF:VOLT:DC D2,H
+conf_91392 = '''CONF:VOLT:DC D2,H
 CONF:REGI 0x00,0x00,0x00
 CONF:REGI 0x00,0x01,0x40
 CONF:REGI 0x00,0x03,0x00
@@ -171,7 +172,7 @@ CONF:REGI 0x00,0x66,0x00
 CONF:REGI 0x00,0x67,0x00
 CONF:REGI 0x00,0x68,0x00
 CONF:REGI 0x00,0x6A,0x00'''
-conf_9516 =  '''CONF:VOLT:DC D1,H
+conf_9516 = '''CONF:VOLT:DC D1,H
 CONF:REGI 0x00,0x00,0x18
 CONF:REGI 0x00,0x04,0x01
 CONF:REGI 0x00,0x10,0x7C
@@ -235,7 +236,7 @@ CONF:REGI 0x01,0xE1,0x02
 CONF:REGI 0x00,0x18,0x07
 CONF:REGI 0x02,0x30,0x00
 CONF:REGI 0x02,0x32,0x01'''
-all_reg='''CONF:VOLT:DC D1,H
+all_reg = '''CONF:VOLT:DC D1,H
 CONF:REGI 0x00,0x00,0x18
 CONF:REGI 0x02,0x32,0x01
 CONF:REGI 0x00,0x04,0x01
@@ -13215,56 +13216,74 @@ CONF:REGI 0x00,0x16,0x00
 CONF:VOLT:DC D2,H
 READ:REGI 0x00,0x16
 CONF:REGI 0x00,0x16,0x00'''
+
+
 class USB():
     def __init__(self):
+        def write(s):
+            print s
+
+        def read(s):
+            print s
+            return '\x00'
+
+        import platform
+        bits = platform.architecture()[0]
+
         try:
-            self.dll = ctypes.cdll.LoadLibrary('usb.dll')
+            if os.path.exists('usb.dll'):
+                self.dll = ctypes.cdll.LoadLibrary('usb.dll')
+            elif '32bit' in bits:
+                self.dll = ctypes.cdll.LoadLibrary('usb_x86.dll')
+            else:
+                self.dll = ctypes.cdll.LoadLibrary('usb_x64.dll')
             self.dll.get_device_number.restype = ctypes.c_ubyte
+            self.dll.write.restype = ctypes.c_bool
         except:
             import traceback
             traceback.print_exc()
             self.have_dev = False
+            self.write = write
+            self.read = read
+            return
         if self.get_exist_dev() > 1:
             dev_index = input('%d devices exist, choose one(start from 0):')
             self.open(dev_index)
         self.have_dev = True
+        
+        # why? Because each write command will return one read command...
+        self.read = self.write
 
     def pure_read(self):
-        # c_s = ctypes.c_char_p(s)
-        # dll.write(c_s)
         rc_s = ctypes.create_string_buffer(64)
         self.dll.read(rc_s)
         # return repr(rc_s.raw)
         return rc_s.raw
 
-    def read(self, s):
-        c_s = ctypes.c_char_p(s)
-        if not self.dll.write(c_s):
-            time.sleep(0.1)
-            self.dll.write(c_s)
-        rs = self.pure_read()
-        return rs
-    
     def write(self, s):
         c_s = ctypes.c_char_p(s)
-        if not self.dll.write(c_s):
+        while not self.dll.write(c_s):
+            print 'Resending command...'
             time.sleep(0.1)
-            self.dll.write(c_s)
-    
+        time.sleep(0.001)
+        rs = self.pure_read()
+        return rs
+
     def open(self, index):
         self.dll.open(ctypes.c_ubyte(index))
-    
+
     def get_exist_dev(self):
         return self.dll.get_device_number()
-    
+
     def write_blocks(self, s):
         cfs = s.split('\n')
         for i in cfs:
-            self.write(i+'\n')
+            self.write(i + '\n')
+
 
 if __name__ == '__main__':
     dev = USB()
-    print dev.get_exist_dev()
+    print 'Exist devices:', dev.get_exist_dev()
     # exit()
     if dev.have_dev:
         # dev.write_blocks(conf_91391)

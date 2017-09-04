@@ -1183,8 +1183,6 @@ class Status_Button(wx.ToggleButton):
         self.SetBitmap(self.bitmap1)
         self.SetBitmapSelected(self.bitmap2)
 
-        # self.SetInitialSize()
-
 
 class Reset_Button(wx.ToggleButton):
     def __init__(self, parent, pos=(600, 10), size=(30, 30)):
@@ -1200,8 +1198,6 @@ class Reset_Button(wx.ToggleButton):
         wx.ToggleButton.__init__(self, parent, -1, '', pos=pos, size=size, style=wx.BU_AUTODRAW | wx.NO_BORDER)
         self.SetBitmap(self.bitmap1)
         self.SetBitmapSelected(self.bitmap2)
-
-        # self.SetInitialSize()
 
 
 class OUT_Button(wx.ToggleButton):
@@ -2470,18 +2466,14 @@ class Event:
         pass
 
     def Ontoggle3_left_Click(self, evt):
-
         toggleb = evt.GetEventObject()
         OnChangeToggleButton(toggleb)
         pass
 
     def Ontoggle3_right_Click(self, evt):
-
         toggleb = evt.GetEventObject()
         OnChangeToggleButton(toggleb)
         pass
-
-        ############## TextCtrl Def #######################
 
     ############## TextCtrl Def #######################
     def OnChangeTextCtrl_Value_Div1(self, evt):
@@ -2986,41 +2978,50 @@ class Event:
         self.Theard_Flag = True
         # ######### 9516 ##########
         usb.write('CONF:VOLT:DC D1,H\n')
-        usb.write('READ:REGI 0x00,0x1F\n')
         raw = usb.read('READ:REGI 0x00,0x1F\n')
         xx = ord(raw[0])
         temp = int(xx) % 2
-        print 'temp', temp
-        print framehand.d9516.statusbutton.GetValue()
-        if temp == 0 and framehand.d9516.statusbutton.GetValue() == False:
-            # set 'off'
-            framehand.d9516.statusbutton.SetValue(True)
-            # OnChangeToggleButton(framehand.d9516.statusbutton)
+        print 'Lock:', temp != 0
 
-        if temp == 1 and framehand.d9516.statusbutton.GetValue() == True:
-            framehand.d9516.statusbutton.SetValue(False)
-            # set 'on'
+        framehand.d9516.statusbutton.SetValue(True) if temp == 0 else framehand.d9516.statusbutton.SetValue(False)
 
+        # 9516
+        updatelist_9516 = ['0003', '001F']
+        usb.write('CONF:VOLT:DC D1,H\n')
+        raw = usb.read('READ:REGI 0x00,0x03\n')
+        substance = dec2hex(ord(raw[0]))
+        k = add_9516.index(3)
+        compare = dec2hex(reg_9516[k].content)
+        if compare != substance:
+            print '0003 9516 change'
+        while len(substance) != 2:
+            substance = '0' + substance
+        WriteReg(9516, '0003', str(substance))
+
+        usb.write('CONF:VOLT:DC D1,H\n')
+        raw = usb.read('READ:REGI 0x00,0x1F\n')
+        substance = dec2hex(ord(raw[0]))
+        k = add_9516.index(31)
+        compare = dec2hex(reg_9516[k].content)
+        if compare != substance:
+            print '001F 9516 change'
+        while len(substance) != 2:
+            substance = '0' + substance
+        WriteReg(9516, '001F', str(substance))
+
+        self.Theard_Flag = False
+
+    def Update9139(self, framehand):
         ############# 91391 7 @ 8 @ 16  #########
         # usb.write('CONF:VOLT:DC D0,H\n')
         # usb.write('CONF:REGI 0x00,0x0C,0x03\n')
-        #
-        # usb.write('CONF:VOLT:DC D0,H\n')
-        # print '1',raw
-        usb.write('READ:REGI 0x00,0x0E\n')
+
+        usb.write('CONF:VOLT:DC D0,H\n')
         raw = usb.read('READ:REGI 0x00,0x0E\n')
         tem = ord(raw[0])
-        # print '2',tem
         tem = str(tem)
-        # print '3',tem
-        while (8 - len(tem) != 0):
-            # print 'enter'
+        while 8 - len(tem) != 0:
             tem = '0' + tem
-        # print tem
-        # print tem[0]
-        # print tem[1]
-        # print temp[2]
-        # print 'tem[0]=',tem[0]
         if tem[0] == '1':
             framehand.d9139.channel1.lock_Button.SetValue(False)
             pass
@@ -3033,15 +3034,9 @@ class Event:
             framehand.d9139.channel1.warning_Button.SetValue(True)
         elif tem[1] == '1':
             framehand.d9139.channel1.warning_Button.SetValue(False)
-            ########### 16 ##############    
-            # if tem[-3]=='1':
-            # framehand.d9139.channel1.DCI_Button.SetValue(False)
-            # elif tem[-3]=='0':
-            # framehand.d9139.channel1.DCI_Button.SetValue(True)
 
         ############# 91392  7@8 @ 16  #########
         usb.write('CONF:VOLT:DC D2,H\n')
-        usb.write('READ:REGI 0x00,0x0E\n')
         raw = usb.read('READ:REGI 0x00,0x0E\n')
         tem = ord(raw[0])
         tem = str(tem)
@@ -3063,7 +3058,6 @@ class Event:
 
         ############# 91391 10 #########
         usb.write('CONF:VOLT:DC D0,H\n')
-        usb.write('READ:REGI 0x00,0x25\n')
         raw = usb.read('READ:REGI 0x00,0x25\n')
         tem = ord(raw[0])
         tem = str(tem)
@@ -3075,7 +3069,6 @@ class Event:
             framehand.d9139.channel1.SPI_Button.SetValue(False)
             ############# 91392  10 #########
         usb.write('CONF:VOLT:DC D2,H\n')
-        usb.write('READ:REGI 0x00,0x25\n')
         raw = usb.read('READ:REGI 0x00,0x25\n')
         tem = ord(raw[0])
         tem = str(tem)
@@ -3086,10 +3079,8 @@ class Event:
         elif tem[-2] == '1':
             framehand.d9139.channel2.SPI_Button.SetValue(False)
 
-
         ############# 91391 11 @ 12  #########
         usb.write('CONF:VOLT:DC D0,H\n')
-        usb.write('READ:REGI 0x00,0x06\n')
         raw = usb.read('READ:REGI 0x00,0x06\n')
         tem = ord(raw[0])
         tem = str(tem)
@@ -3105,7 +3096,6 @@ class Event:
             framehand.d9139.channel1.Underflow_Button.SetValue(False)
         ############# 91392  11@12 #########
         usb.write('CONF:VOLT:DC D2,H\n')
-        usb.write('READ:REGI 0x00,0x06\n')
         raw = usb.read('READ:REGI 0x00,0x06\n')
         tem = ord(raw[0])
         tem = str(tem)
@@ -3127,7 +3117,7 @@ class Event:
             while len(add) != 4:
                 add = '0' + add
             usb.write('CONF:VOLT:DC D0,H\n')
-            usb.write('READ:REGI 0x' + add[0:2] + ',0x' + add[2:4] + '\n')
+            # usb.write('READ:REGI 0x' + add[0:2] + ',0x' + add[2:4] + '\n')
             raw = usb.read('READ:REGI 0x' + add[0:2] + ',0x' + add[2:4] + '\n')
             substance = dec2hex(ord(raw[0]))
             k = add_9139.index(i)
@@ -3139,7 +3129,7 @@ class Event:
             WriteReg(91391, str(add), str(substance))
 
             usb.write('CONF:VOLT:DC D2,H\n')
-            usb.write('READ:REGI 0x' + add[0:2] + ',0x' + add[2:4] + '\n')
+            # usb.write('READ:REGI 0x' + add[0:2] + ',0x' + add[2:4] + '\n')
             raw = usb.read('READ:REGI 0x' + add[0:2] + ',0x' + add[2:4] + '\n')
             substance = dec2hex(ord(raw[0]))
             k = add_9139.index(i)
@@ -3149,34 +3139,6 @@ class Event:
             while len(substance) != 2:
                 substance = '0' + substance
             WriteReg(91392, str(add), str(substance))
-
-        # 9516
-        updatelist_9516 = ['0003', '001F']
-        usb.write('CONF:VOLT:DC D1,H\n')
-        raw = usb.write('READ:REGI 0x00,0x03\n')
-        raw = usb.read('READ:REGI 0x00,0x03\n')
-        substance = dec2hex(ord(raw[0]))
-        k = add_9516.index(3)
-        compare = dec2hex(reg_9516[k].content)
-        if compare != substance:
-            print '0003 9516 change'
-        while len(substance) != 2:
-            substance = '0' + substance
-        WriteReg(9516, '0003', str(substance))
-
-        usb.write('CONF:VOLT:DC D1,H\n')
-        usb.write('READ:REGI 0x00,0x1F\n')
-        raw = usb.read('READ:REGI 0x00,0x1F\n')
-        substance = dec2hex(ord(raw[0]))
-        k = add_9516.index(31)
-        compare = dec2hex(reg_9516[k].content)
-        if compare != substance:
-            print '001F 9516 change'
-        while len(substance) != 2:
-            substance = '0' + substance
-        WriteReg(9516, '001F', str(substance))
-
-        self.Theard_Flag = False
 
     def ON_OFF_Click(self, evt):
         toggleb = evt.GetEventObject()
@@ -3533,10 +3495,8 @@ class MyPanel0(wx.Panel):
             MyPanel0.image1 = wx.Image(ImagePath + "show2.jpg", wx.BITMAP_TYPE_ANY)
             MyPanel0.image1.Rescale(size[0], size[1] * 0.85, quality=wx.IMAGE_QUALITY_HIGH)
             MyPanel0.bitmap1 = wx.BitmapFromImage(self.image1)
-        # print '111111111'
         # self.SetBackgroundColour((255,0,0))
         self.Bind(wx.EVT_PAINT, self.OnPaint)
-        # print '2222222'   
         pos = (100, 135)
         self.vco = wx.StaticText(self, wx.ID_ANY, u"Vco", pos, wx.Size(20, 20), 0)
         self.vco.Wrap(-1)
@@ -3600,7 +3560,6 @@ class MyPanel0(wx.Panel):
         # self.textCtrl_B = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, (278,135), wx.Size(80,26), wx.TE_PROCESS_ENTER )
         self.textCtrl_B = wx.SpinCtrl(self, wx.ID_ANY, wx.EmptyString, (278, 135), wx.Size(80, 26), wx.TE_PROCESS_ENTER,
                                       0, 8192, 25)
-        # temp_value='12'
         # self.textCtrl_B.SetValue(temp_value)
         self.textCtrl_B.Bind(wx.EVT_TEXT_ENTER, Event().OnChangeTextCtrl_Value_B)
         self.textCtrl_B.Bind(wx.EVT_SPINCTRL, Event().OnChangeTextCtrl_Value_B)
@@ -4165,4 +4124,5 @@ if __name__ == '__main__':
     InitialParameter_91391()
     InitialParameter_91392()
     InitialParameter_5732()
+    print 'Initial end.'
     a.MainLoop()
