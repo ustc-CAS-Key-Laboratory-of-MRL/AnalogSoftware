@@ -2666,7 +2666,7 @@ class Event:
             if i not in num:
                 textctrl_Div1.SetValue(25)
                 temp = wx.MessageBox("Please input integer", "Sorry")
-                temp.Destroy()
+                # temp.Destroy()
                 # print 'wrong1'
                 return
         a = int(s)
@@ -2674,7 +2674,7 @@ class Event:
             # print 'wrong2'
             textctrl_Div1.SetValue(25)
             temp = wx.MessageBox("Please input integer between 0 and 8191", "Sorry")
-            temp.Destroy()
+            # temp.Destroy()
             return
         t2 = '%X' % a
         if len(t2) == 1:
@@ -2755,7 +2755,7 @@ class Event:
             if i not in num:
                 textctrl_Div1.SetValue(0)
                 temp = wx.MessageBox("Please input integer ", "Sorry")
-                temp.Destroy()
+                # temp.Destroy()
                 # print 'wrong1'
                 return
         a = int(s)
@@ -2763,7 +2763,7 @@ class Event:
             # print 'wrong2'
             textctrl_Div1.SetValue(0)
             temp = wx.MessageBox("Please input integer between 0 and 63", "Sorry")
-            temp.Destroy()
+            # temp.Destroy()
         t2 = '%X' % a
         if len(t2) == 1:
             t2 = '000' + t2
@@ -2813,13 +2813,13 @@ class Event:
             if i not in num:
                 textctrl_Div1.SetValue(25)
                 temp = wx.MessageBox("Please input integer ", "Sorry")
-                temp.Destroy()
+                # temp.Destroy()
                 return
         a = int(s)
         if a < 1 or a > 16384:
             textctrl_Div1.SetValue(25)
             temp = wx.MessageBox("Please input integer between 1 and 16383", "Sorry")
-            temp.Destroy()
+            # temp.Destroy()
             return
         t2 = '%X' % a
         if len(t2) == 1:
@@ -3489,6 +3489,7 @@ class MyPanel0(wx.Panel):
     image1 = None
 
     def __init__(self, parent, size=wx.Size(800, 500)):
+        # 9516 panel
         wx.Panel.__init__(self, parent, -1, wx.DefaultPosition, size, wx.NO_BORDER)
         sizer = wx.BoxSizer(wx.VERTICAL)
         if MyPanel0.bitmap1 is None:

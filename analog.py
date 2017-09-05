@@ -13277,8 +13277,11 @@ class USB():
 
     def write_blocks(self, s):
         cfs = s.split('\n')
-        for i in cfs:
-            self.write(i + '\n')
+        leng = len(cfs)
+        for i, cmd in enumerate(cfs):
+            if i % 1000==0:
+                print i, leng
+            self.write(cmd + '\n')
 
 
 if __name__ == '__main__':
@@ -13291,9 +13294,7 @@ if __name__ == '__main__':
         # dev.write_blocks(conf_9516)
         dev.write_blocks(all_reg)
     # exit()
-    dev.open(1)
-    if dev.have_dev:
-        # dev.write_blocks(conf_91391)
-        # dev.write_blocks(conf_91392)
-        # dev.write_blocks(conf_9516)
-        dev.write_blocks(all_reg)
+    if dev.get_exist_dev() > 1:
+        dev.open(1)
+        if dev.have_dev:
+            dev.write_blocks(all_reg)
